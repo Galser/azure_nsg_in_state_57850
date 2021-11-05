@@ -43,27 +43,6 @@ output "ddos_plan_name" {
   description = "The name of the DDoS Protection Plan."
 }
 
-/* output "network_watcher_rg_name" {
-  value       = var.create_network_watcher ? azurerm_resource_group.nw_rg[0].name : null
-  description = "The name of the Resource Group containing the Network Watcher."
-}
-
-output "network_watcher_rg_id" {
-  value       = var.create_network_watcher ? azurerm_resource_group.nw_rg[0].id : null
-  description = "The ID of the Resource Group containing the Network Watcher."
-}
-
-output "network_watcher_name" {
-  value       = var.create_network_watcher ? azurerm_network_watcher.network_watcher[0].name : null
-  description = "The name of the Network Watcher."
-}
-
-output "network_watcher_id" {
-  value       = var.create_network_watcher ? azurerm_network_watcher.network_watcher[0].id : null
-  description = "The ID of the Network Watcher."
-}
-*/
-
 output "subnet_ids" {
   value = tomap({
     for s, subnet in azurerm_subnet.subnet : s => subnet.id

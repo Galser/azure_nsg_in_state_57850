@@ -38,22 +38,6 @@ variable "policy_tags" {
   description = "A mapping of tags which should be assigned to the Firewall Policy. The key of policy tags must be lowercase due to a bug in the Azure API: https://github.com/terraform-providers/terraform-provider-azurerm/issues/9620"
 }
 
-/*variable "diag_logs_la_workspace_id" {
-  type        = string
-  description = "The Workspace ID of the Log Analytics Workspace where diagnostics logs and NSG flow logs should be sent."
-}
-
-variable "diag_logs_la_workspace_location" {
-  type        = string
-  description = "The Azure region of the Log Analytics Workspace where diagnostics logs and NSG flow logs should be sent."
-}
-
-variable "diag_logs_la_workspace_resource_id" {
-  type        = string
-  description = "The ID of the Log Analytics Workspace where diagnostics logs and NSG flow logs should be sent."
-}
-*/
-
 // Virtual Network
 
 variable "vnet_name" {
