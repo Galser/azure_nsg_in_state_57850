@@ -16,8 +16,8 @@ This repository aims to test it.
 
 # TODO
 
-- [ ] import & santitize customer code into "original_code" folder
-- [ ] make it work (code have been provided as is directly in the ticket not in ZIP archove, so potentially contains some glitches from Markup )
+- [x] import & santitize customer code into "original_code" folder
+- [x] make it work (code have been provided as is directly in the ticket not in ZIP archove, so potentially contains some glitches from Markup )
 - [ ] clean and simplify the code to bare minimum
 - [ ] check the claim 
 - [ ] update readme

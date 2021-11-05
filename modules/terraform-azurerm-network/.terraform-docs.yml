@@ -1,0 +1,66 @@
+version: ">= 0.13.0"
+formatter: markdown table
+sections:
+  show:
+    - requirements
+    - providers
+    - resources
+    - inputs
+    - outputs
+output:
+  file: .\README.md
+  mode: inject
+  template: |-
+    <!-- BEGIN_TF_DOCS -->
+    {{ .Content }}
+    <!-- END_TF_DOCS -->
+content: |-
+  {{ .Requirements }}
+  
+  {{ .Providers }}
+
+  {{ .Resources }}
+
+  # Example usage with Terraform 0.13+
+  {{ include "examples/example_basic/README.md" }}
+  
+  ## Tags
+  This module deploys a default set of tags assigned to all resources formatted with "Camel Case" *keys* and all lowercase *values*:
+  * `CreationDate : timestamp()` (timestamp will not be modified with subsequent applies)
+
+  In addition, you can create your own custom tags using the **tags** variable. See *example_adv2* for example usage. Note: Azure limits the number of tags per resource to 15.
+
+  ## Network Security Group Info
+  * By default, each subnet will be deployed with an NSG (with flow logging enabled with a 30 day retention period and traffic analytics enabled). Any custom rules added will be in addition to the default rules. For example usage of custom NSG rules, see *example_adv2*. To deploy a subnet without an NSG, specify `nsg = false` in the *subnets* variable map.
+
+  ## Network Watcher Info
+  * The Network Watcher Resource Group name is hard-coded to the Azure default "NetworkWatcherRG". The reason for this is that if Terraform creates this RG with another name the default RG will be still created by Azure and not managed by Terraform, and this is an undesirable outcome.
+  * Network Watcher is a per-region resource within a subscription. Only deploy 1 Network Watcher per-region in a subscription. If deploying multiple vnets to the same region in the same subscription, ensure the following: the first Network module call creates the Network Watcher resources (default), and with subsequent module calls specify `create_network_watcher = false` and pass in the values `existing_network_watcher_rg_name` and `existing_network_watcher_name` from the first module.
+    * In addition to the above, if you would like multiple vnets to send NSG Flow Logs to the same Storage Account rather than create a new storage account for each vnet, you can specify `create_nsg_flow_logs_storage_account = false` and pass the value `nsg_flow_logs_storage_account_id`. See *example_adv1* for example usage.
+
+  ## Azure Bastion Host (Optional)
+  * To deploy an Azure Bastion Host, simply specify `create_bastion_host = true` and provide the subnet address space with `bas_subnet_address_prefix = ["x.x.x.x/27"]`. This will create the Bastion subnet, the NSG with required rule set, the Bastion host and Public IP for connecting.
+  * All attributes used to customize the Bastion Host are prefixed with *bas_*.
+
+  ## Azure Firewall Premium (Optional)
+  * This module only supports the Firewall Premium sku.
+  * To deploy an Azure Firewall instance, specify `create_azure_firewall = true` and provide the subnet address space with `fw_subnet_address_prefix = ["x.x.x.x/26"]`. There are no other additional required variables. Refer to the **Input** table for default values of additional *Optional* arguments.
+  * All attributes used to customize the Firewall and optional Policy are prefixed with *fw_*.
+  * To route traffic to the Firewall, assign the Route Table to the subnet by specifying `fw_route = true` in the subnet attribute mapping.
+
+  ### Firewall Policy (Optional)
+  * To create a Firewall Policy assigned to the created Firewall, specify `create_fw_policy = true`.
+  * You can use the [Azure Firewall Policy](https://app.terraform.io/app/ef-cloudops/registry/modules/private/ef-cloudops/azure-firewall-policy/azurerm) module to manage the Policy rules.
+  * To assign an existing Policy, such as one created by the [Azure Firewall Policy](https://app.terraform.io/app/ef-cloudops/registry/modules/private/ef-cloudops/azure-firewall-policy/azurerm) module, specify the existing Firewall Policy ID using the *fw_policy_id* attribute, for example: `fw_policy_id = module.azure_firewall_policy.policy_id`.
+  * Similar to the Firewall, all attributes used to customize the optional Policy are prefixed with *fw_*.
+
+  ### AKS Egress Configuration (Optional)
+  This module can create a default AKS egress configuration to protect your AKS clusters, as documented here: [Control egress traffic for cluster nodes in Azure Kubernetes Service (AKS)](https://docs.microsoft.com/en-us/azure/aks/limit-egress-traffic). Specifically, it uses the [AKS FQDN Tag](https://docs.microsoft.com/en-us/azure/aks/limit-egress-traffic#restrict-egress-traffic-using-azure-firewall), which contains all the required FQDNs and automatically keeps them up to date, in order to simplify the configuration.
+  * To deploy this AKS default configuration, specify `configure_fw_aks_egress = true`.
+  * Ensure you have a subnet created for AKS.
+  * You can assign the Firewall Route Table to the subnet by specifying `fw_route = true` in the subnet attribute mapping.
+  * This can be further customized using the attributes prefixed with *fw_aks_*.
+  
+  {{ .Inputs }}
+
+  {{ .Outputs }}

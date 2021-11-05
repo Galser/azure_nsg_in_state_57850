@@ -32,3 +32,6 @@ terraform.auto.tfvars
 
 # Original code
 original_code/*
+
+# Lock for YTF 1.0X
+.terraform.lock.hcl
